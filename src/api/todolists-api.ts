@@ -1,16 +1,4 @@
-import axios from "axios";
-
-const settings = {
-    withCredentials: true,
-    headers: {
-        "API-KEY": "52383a05-1980-43a0-9378-fe00796910cb"
-    }
-}
-
-const instance = axios.create({
-    baseURL: "https://social-network.samuraijs.com/api/1.1/",
-    ...settings
-})
+import axios from 'axios'
 
 type TodolistType = {
     id: string
@@ -18,6 +6,7 @@ type TodolistType = {
     order: number
     title: string
 }
+
 export type ResponseType<D> = {
     resultCode: number
     messages: Array<string>
@@ -25,30 +14,30 @@ export type ResponseType<D> = {
     data: D
 }
 
-type GetTaskResponse = {
-    error: string | null
-    totalCount: number
-    items: []
-}
 
-export const todolistsAPI = {
-    getTodolists() {
-        return instance.get<Array<TodolistType>>("todo-lists")
+const instance = axios.create({
+    baseURL: "https://social-network.samuraijs.com/api/1.1/",
+    withCredentials: true,
+    headers: {
+        'API-KEY': '52383a05-1980-43a0-9378-fe00796910cb',
+    }
+})
+
+
+export const todolistAPI = {
+    updateTodolist(todolistId: string, title: string) {
+        return instance.put<ResponseType<{}>>(`todo-lists/${todolistId}`, {title: title})
     },
-    createTodolist() {
-        return instance.post<ResponseType<{
-            item: TodolistType
-        }>>("todo-lists", {title: "NewTodo"})
-    },
-    deleteTodolist() {
-        const todolistId = "65711396-8846-43d8-848d-dde6a34daded"
+    deleteTodolist(todolistId: string) {
         return instance.delete<ResponseType<{}>>(`todo-lists/${todolistId}`)
     },
-    updateTodolistTitle() {
-        const todolistId = "65711396-8846-43d8-848d-dde6a34daded"
-        return instance.put<ResponseType<{}>>(`todo-lists/${todolistId}`, {title: "UpdatedNewTodo"})
+    createTodolist(title: string) {
+        return instance.post<ResponseType<{item: TodolistType}>>("todo-lists", {title})
+    },
+    getTodolist() {
+        return instance.get<Array<TodolistType>>("todo-lists")
     },
     getTasks(todolistID: string) {
-        return instance.get<GetTaskResponse>(`todo-lists/${todolistID}/tasks`)
+        return instance.get(`todo-lists/${todolistID}/tasks`)
     }
 }
