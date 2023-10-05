@@ -39,5 +39,9 @@ export const todolistAPI = {
     },
     getTasks(todolistID: string) {
         return instance.get(`todo-lists/${todolistID}/tasks`)
-    }
+    },
+    createTask(todolistID: string, title: string) {
+        return instance.post(`todo-lists/${todolistID}/tasks`, {title})
+    },
+
 }
